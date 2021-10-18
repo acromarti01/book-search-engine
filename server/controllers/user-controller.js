@@ -46,6 +46,12 @@ module.exports = {
   // user comes from `req.user` created in the auth middleware function
   async saveBook({ user, body }, res) {
     console.log(user);
+    console.log(body);
+    
+    //  username: 'david',
+    //  email: 'david@fakemail.com',
+    //  _id: '616cba0d861f67851436ad81'      
+      
     try {
       const updatedUser = await User.findOneAndUpdate(
         { _id: user._id },
