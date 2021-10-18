@@ -14,12 +14,11 @@ const resolvers = {
             return { token, user };
         },
 
-        saveBook: async (parent, {}, context, info) => {
+        saveBook: async (parent, { userId, input }, context, info) => {
             const updatedUser = await User.findOneAndUpdate(
-                { _id: User._id },
+                { _id: userId },
                 { $addToSet: { savedBooks: input } },
                 { new: true, runValidators: true }
-
             );
             return updatedUser;
         },
