@@ -18,9 +18,12 @@ const resolvers = {
             const updatedUser = await User.findOneAndUpdate(
                 { _id: User._id },
                 { $addToSet: { savedBooks: input } },
+                { new: true, runValidators: true }
 
             );
             return updatedUser;
         },
     }
 }
+
+module.exports = resolvers;
