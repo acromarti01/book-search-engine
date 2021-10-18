@@ -8,6 +8,23 @@ const resolvers = {
 
     Mutation: {
 
+        login: async (parent, { email, password }, context, info) => {
+            const user = await User.findOne({ email });
+      
+            if (!user) {
+              throw new AuthenticationError('No user with this email found!');
+            }
+      
+            const correctPw = await user.isCorrectPassword(password);
+      
+            if (!correctPw) {
+              throw new AuthenticationError('Incorrect password!');
+            }
+      
+            const token = signToken(user);
+            return { token, user };
+        },
+
         addUser: async (parent, { username, email, password }, context, info) => {
             const user = await User.create({ username, email, password });
             const token = signToken(user);            
@@ -20,6 +37,9 @@ const resolvers = {
                 { $addToSet: { savedBooks: input } },
                 { new: true, runValidators: true }
             );
+            if (!updatedUser) {
+                throw new AuthenticationError('Cannot Save Book!');
+            }
             return updatedUser;
         },
 
@@ -29,6 +49,9 @@ const resolvers = {
                 { $pull: { savedBooks: { bookId: bookId} } },
                 { new: true }
             );
+            if (!updatedUser) {
+                throw new AuthenticationError('Cannot Remove Book!');
+            }
             return updatedUser;
         },
     }
